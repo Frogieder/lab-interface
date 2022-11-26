@@ -1,0 +1,2 @@
+add_library(misc miscellaneous_functions.cpp)
+target_link_libraries(misc pico_stdlib)
