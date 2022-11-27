@@ -9,6 +9,7 @@
 #include <vector>
 #include <string_view>
 #include "pico/stdlib.h"
+#include "../knob/knob.hpp"
 #include "../../pico-ssd1306/ssd1306.h"
 #include "../../pico-ssd1306/shapeRenderer/ShapeRenderer.h"
 #include "../../pico-ssd1306/textRenderer/TextRenderer.h"
@@ -36,8 +37,9 @@ class Menu {
      */
     std::map<uint32_t, std::pair<const char*, std::vector<uint32_t>>> layout;
     pico_ssd1306::SSD1306 *display;
+    Knob * knob;
 public:
-    explicit Menu(pico_ssd1306::SSD1306 * _display);
+    explicit Menu(pico_ssd1306::SSD1306 * _display, Knob * _knob);
     ~Menu();
     uint32_t display_menu(uint32_t menu, uint8_t pos=0);
     uint32_t menu_loop(uint32_t start=MENU_ROOT);

@@ -19,11 +19,16 @@
 #include "../pico-ssd1306/textRenderer/TextRenderer.h"
 
 #include "misc/miscellaneous_functions.hpp"
-#include "menu/menu.h"
+#include "menu/menu.hpp"
+#include "knob/knob.hpp"
 
 #define I2C_PORT i2c1
 
 #define I2C_PIN_SDA 2
 #define I2C_PIN_SCL 3
+
+#define KNOB_CLK_PIN 15
+#define KNOB_DT_PIN 14
+#define KNOB_KEY_PIN 13
 
 #endif //TEST_PROJECT_MAIN_H
