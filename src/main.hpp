@@ -21,6 +21,7 @@
 #include "misc/miscellaneous_functions.hpp"
 #include "menu/menu.hpp"
 #include "knob/knob.hpp"
+#include "sensors/sensors.hpp"
 
 #define I2C_PORT i2c1
 

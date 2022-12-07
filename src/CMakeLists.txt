@@ -1,6 +1,7 @@
 add_subdirectory(misc)
 add_subdirectory(menu)
 add_subdirectory(knob)
+add_subdirectory(sensors)
 
 add_executable(lab_interface
         main.cpp
@@ -15,6 +16,7 @@ target_link_libraries(lab_interface
         misc
         menu
         knob
+        sensors
         pico_ssd1306
         )
 

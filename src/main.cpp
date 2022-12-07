@@ -1,9 +1,11 @@
 #include "main.hpp"
 
+int delay_time = 500;
+
 void core1_entry() {
     while (true) {
         gpio_put(PICO_DEFAULT_LED_PIN, !gpio_get(PICO_DEFAULT_LED_PIN));
-        sleep_ms(300);
+        sleep_ms(delay_time);
     }
 }
 
@@ -30,19 +32,27 @@ int main() {
 
     Menu menu = Menu(&display, &knob);
 
+    Sensors sensors = Sensors();
+
     multicore_launch_core1(core1_entry);
-    int i = 0;
     /*****************************
      *            LOOP           *
      *****************************/
-//    while (true) {
-//        display.clear();
-//        if (knob.tick().press)
-//            display.setPixel(32, 32);
-//        display.sendBuffer();
-//    }
     while(true) {
+        delay_time = 500;
         auto selected = menu.menu_loop();
+        SensorType sensorType;
+        switch (selected) {
+            case MENU_ATTACH:
+                delay_time = 100;
+                sensorType = menu.choose_sensor();
+                delay_time = 300;
+                if (!sensors.add_sensor(sensorType))
+                    menu.fatal_error("Sensor not implemented");
+                break;
+            default:
+                menu.fatal_error("Function not implemented");
+        }
     }
     return 0;
 }

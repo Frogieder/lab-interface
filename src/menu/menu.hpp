@@ -8,19 +8,23 @@
 #include <map>
 #include <vector>
 #include <string_view>
+//#include <sstream>
+#include "../sensors/sensors.hpp"
 #include "pico/stdlib.h"
 #include "../knob/knob.hpp"
 #include "../../pico-ssd1306/ssd1306.h"
 #include "../../pico-ssd1306/shapeRenderer/ShapeRenderer.h"
 #include "../../pico-ssd1306/textRenderer/TextRenderer.h"
 
-#define ITEM_IS_FUNCTION 0x80000000
+#define FLAG_FUNCTION 0x80000000
+#define FLAG_SENSOR 0x40000000
+#define FLAG_CANCEL 0x20000000
 
 #define MENU_ROOT 0
 
-#define MENU_ATTACH 0x1
-#define MENU_ATTACH_SCAN 0x11
-#define MENU_ATTACH_ADD 0x12
+#define MENU_ATTACH (0x1 | FLAG_FUNCTION)
+//#define MENU_ATTACH_SCAN 0x11
+//#define MENU_ATTACH_ADD 0x12
 
 #define MENU_MONITOR 0x2
 #define MENU_START 0x3
@@ -28,22 +32,108 @@
 #define MENU_DUMMY_ONE 0x5
 #define MENU_DUMMY_TWO 0x6
 
+#define MENU_CANCEL (FLAG_CANCEL | 1)
+
+#define SENSORS_MENU (0 | FLAG_SENSOR)
+#define SENSOR_CLOCK (1 | FLAG_SENSOR)
+
+typedef std::map<uint32_t, std::pair<std::string_view, std::vector<uint32_t>>> layout_t;
+
+
+//{"TE: FX29K0", SensorType::force_fx29k0} 0x10
+//"Temperature",
+//{   "GY906",   SensorType::temp_gy906},
+//{"2c55", SensorType::temp_2c55}
+//"Acceleration",
+//{   "ADXL312", SensorType::accel_ADXL312}
+//"Hall effect",
+//{   "AD22151", SensorType::hall_AD22151}
+//"Distance",
+//{   "HC-SR04", SensorType::distance_hcsr04}
+
 class Menu {
 
-    /*
+    /**
      * map representing a tree structure of the menu.
      * Submenus are stored in a vector, where each submenu is represented by a pair, containing its index and name
      * Each submenu has its index, where last four bits are unique to the menu item, the previous bits are the index of its parent (its path).
      */
-    std::map<uint32_t, std::pair<const char*, std::vector<uint32_t>>> layout;
     pico_ssd1306::SSD1306 *display;
-    Knob * knob;
+    Knob *knob;
+    layout_t layout = {
+        {MENU_ROOT,      {"Main Menu",     {MENU_ATTACH, MENU_MONITOR, MENU_START, MENU_CALIBRATE, MENU_DUMMY_ONE, MENU_DUMMY_TWO}}},
+        /* Attaching submenu */
+        {MENU_ATTACH,    {"Attach",        {}}},
+//            {MENU_ATTACH_ADD, {"Add sensor", {MENU_ATTACH}}},
+//            {MENU_ATTACH_SCAN, {"Scan", {MENU_ATTACH}}},
+        /* Monitoring submenu */
+        {MENU_MONITOR,   {"Monitor",       {MENU_ROOT}}},
+        /* Measurement submenu */
+        {MENU_START,     {"Measure",       {MENU_ROOT}}},
+        /* Calibration menu */
+        {MENU_CALIBRATE, {"Calibrate",     {MENU_ROOT}}},
+        /* Dummies */
+        {MENU_DUMMY_ONE, {"Dummy 1",       {MENU_ROOT}}},
+        {MENU_DUMMY_TWO, {"Dummy 2",       {MENU_ROOT}}},
+
+        /* SENSORS */
+        {SENSORS_MENU,   {"Select sensor", {MENU_ROOT,   SENSOR_CLOCK}}},
+
+        /* SPECIAL */
+        {MENU_CANCEL,    {"Cancel",        {MENU_ROOT}}}
+    };
+
+
+    layout_t sensor_menu_layout = {
+        {MENU_ROOT, {"All sensors",  {MENU_CANCEL, 0x1, 0x2, 0x3, 0x4, 0x5}}},
+        /* Force */
+        {0x1,       {"Force sensor", {MENU_ROOT,   0x10}}},
+        {0x10,      {"TE: FX29K0",   {}}},
+        /* Temperature */
+        {0x2,       {"Temperature",  {MENU_ROOT,   0x20}}},
+        {0x20,      {"GY906",        {}}},
+        {0x21,      {"2c55",         {}}},
+        /* Acceleration */
+        {0x3,       {"Acceleration", {MENU_ROOT,   0x30}}},
+        {0x30,      {"ADXL312",      {}}},
+        /* Distance */
+        {0x4,       {"Distance",     {MENU_ROOT,   0x40}}},
+        {0x40,      {"HC-SR04",      {}}},
+        /* Hall effect */
+        {0x5,       {"Hall",         {MENU_ROOT,   0x50}}},
+        {0x50,      {"AD22151",      {}}},
+    };
+
+
+    std::map<uint32_t, SensorType> sensor_layout_enum_map = {
+        {0x00, SensorType::none},
+        {0x10, SensorType::force_fx29k0},
+        {0x20, SensorType::temp_gy906},
+        {0x20, SensorType::temp_2c55},
+        {0x30, SensorType::accel_ADXL312},
+        {0x40, SensorType::distance_hcsr04},
+        {0x50, SensorType::hall_AD22151},
+    };
+
 public:
-    explicit Menu(pico_ssd1306::SSD1306 * _display, Knob * _knob);
+    explicit Menu(pico_ssd1306::SSD1306 *_display, Knob *_knob);
+
     ~Menu();
-    uint32_t display_menu(uint32_t menu, uint8_t pos=0);
-    uint32_t menu_loop(uint32_t start=MENU_ROOT);
-    std::string_view get_item(uint32_t menu, uint32_t pos);
+
+    /** displays menu onto the display given menu index and position of the selected item */
+    void display_menu(uint32_t menu, uint8_t pos, layout_t *_layout);
+
+    /** loop to get command from user using interactive submenus */
+    uint32_t menu_loop(uint32_t start = MENU_ROOT);
+
+    /** returns the name of a menu given submenu and a position to look into */
+    std::string_view get_item(uint32_t menu, uint32_t pos, layout_t * _layout);
+
+    /** prompts the user to choose a sensor from the list */
+    SensorType choose_sensor();
+
+    /** call this in case everything fails and cry */
+    [[noreturn]] void fatal_error(std::string_view text = "");
 };
 
 
