@@ -27,6 +27,7 @@ class Knob {
     uint64_t next_press;
 public:
     Knob(uint _clk_pin, uint _dt_pin, uint key_pin);
+
     knob_state tick();
 };
 

@@ -12,7 +12,7 @@ bool SensorClock::init() {
 }
 
 int16_t SensorClock::get_blocking() {
-    return (int16_t)((time_us_32() / scale) & 0xffff);
+    return (int16_t) ((time_us_32() / scale) & 0xffff);
 }
 
 bool SensorClock::set_scale(int _scale) {

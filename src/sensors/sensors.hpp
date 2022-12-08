@@ -75,18 +75,25 @@ class SensorClock : public iSensor {
 };
 
 class NoSensor : public iSensor {
-    bool calibrate() override {return true;}
-    bool init() override {return true;}
-    bool deinit() override {return true;}
-    bool set_scale(int _scale) override {return true;}
-    bool start_session() override {return true;}
-    int16_t get_blocking() override {return 0;}
+    bool calibrate() override { return true; }
+
+    bool init() override { return true; }
+
+    bool deinit() override { return true; }
+
+    bool set_scale(int _scale) override { return true; }
+
+    bool start_session() override { return true; }
+
+    int16_t get_blocking() override { return 0; }
 };
 
 class Sensors {
 public:
     Sensors();
-    std::vector<std::shared_ptr<iSensor>> list {};
+
+    std::vector<std::shared_ptr<iSensor>> list{};
+
 //    std::vector<iSensor*> list {};
     bool add_sensor(SensorType sensor_type);
 };

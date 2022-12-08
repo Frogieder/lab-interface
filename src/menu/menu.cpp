@@ -11,7 +11,7 @@ Menu::Menu(pico_ssd1306::SSD1306 *_display, Knob *_knob) {
 
 Menu::~Menu() = default;
 
-void Menu::display_menu(uint32_t menu, uint8_t pos, layout_t * _layout) {
+void Menu::display_menu(uint32_t menu, uint8_t pos, layout_t *_layout) {
     if ((*_layout).contains(menu)) {
         /* Title */
         pico_ssd1306::drawText(display, font_12x16, (*_layout)[menu].first, 0, 0);
@@ -64,7 +64,7 @@ uint32_t Menu::menu_loop(uint32_t start) {
     return 0;
 }
 
-std::string_view Menu::get_item(uint32_t menu, uint32_t pos, layout_t * _layout) {
+std::string_view Menu::get_item(uint32_t menu, uint32_t pos, layout_t *_layout) {
     if ((*_layout).contains(menu)) {
         if (pos < (*_layout)[menu].second.size()) {
             if ((*_layout).contains((*_layout)[menu].second[pos]))

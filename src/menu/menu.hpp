@@ -85,39 +85,39 @@ class Menu {
 
 
     layout_t sensor_menu_layout = {
-        {MENU_ROOT, {"All sensors",  {MENU_CANCEL, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6}}},
-        {MENU_CANCEL, {"Back to menu", {MENU_ROOT}}},
+        {MENU_ROOT,   {"All sensors",   {MENU_CANCEL, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6}}},
+        {MENU_CANCEL, {"Back to menu",  {MENU_ROOT}}},
         /* Force */
-        {0x1,       {"Force sensor", {MENU_ROOT,   0x10}}},
-        {0x10,      {"TE: FX29K0",   {}}},
+        {0x1,         {"Force sensor",  {MENU_ROOT,   0x10}}},
+        {0x10,        {"TE: FX29K0",    {}}},
         /* Temperature */
-        {0x2,       {"Temperature",  {MENU_ROOT,   0x20}}},
-        {0x20,      {"GY906",        {}}},
-        {0x21,      {"2c55",         {}}},
+        {0x2,         {"Temperature",   {MENU_ROOT,   0x20}}},
+        {0x20,        {"GY906",         {}}},
+        {0x21,        {"2c55",          {}}},
         /* Acceleration */
-        {0x3,       {"Acceleration", {MENU_ROOT,   0x30}}},
-        {0x30,      {"ADXL312",      {}}},
+        {0x3,         {"Acceleration",  {MENU_ROOT,   0x30}}},
+        {0x30,        {"ADXL312",       {}}},
         /* Distance */
-        {0x4,       {"Distance",     {MENU_ROOT,   0x40}}},
-        {0x40,      {"HC-SR04",      {}}},
+        {0x4,         {"Distance",      {MENU_ROOT,   0x40}}},
+        {0x40,        {"HC-SR04",       {}}},
         /* Hall effect */
-        {0x5,       {"Hall",         {MENU_ROOT,   0x50}}},
-        {0x50,      {"AD22151",      {}}},
+        {0x5,         {"Hall",          {MENU_ROOT,   0x50}}},
+        {0x50,        {"AD22151",       {}}},
         /* Timers */
-        {0x6,      {"Clock",         {MENU_ROOT, 0x60}}},
-        {0x60,     {"Builtin clock", {}}}
+        {0x6,         {"Clock",         {MENU_ROOT,   0x60}}},
+        {0x60,        {"Builtin clock", {}}}
     };
 
 
     std::map<uint32_t, SensorType> sensor_layout_enum_map = {
-        {0x00, SensorType::none},
-        {0x10, SensorType::force_fx29k0},
-        {0x20, SensorType::temp_gy906},
-        {0x20, SensorType::temp_2c55},
-        {0x30, SensorType::accel_ADXL312},
-        {0x40, SensorType::distance_hcsr04},
-        {0x50, SensorType::hall_AD22151},
-        {0x60, SensorType::clock_builtin},
+        {0x00,        SensorType::none},
+        {0x10,        SensorType::force_fx29k0},
+        {0x20,        SensorType::temp_gy906},
+        {0x20,        SensorType::temp_2c55},
+        {0x30,        SensorType::accel_ADXL312},
+        {0x40,        SensorType::distance_hcsr04},
+        {0x50,        SensorType::hall_AD22151},
+        {0x60,        SensorType::clock_builtin},
         {MENU_CANCEL, SensorType::none}
     };
 
@@ -133,7 +133,7 @@ public:
     uint32_t menu_loop(uint32_t start = MENU_ROOT);
 
     /** returns the name of a menu given submenu and a position to look into */
-    std::string_view get_item(uint32_t menu, uint32_t pos, layout_t * _layout);
+    std::string_view get_item(uint32_t menu, uint32_t pos, layout_t *_layout);
 
     /** prompts the user to choose a sensor from the list */
     SensorType choose_sensor();

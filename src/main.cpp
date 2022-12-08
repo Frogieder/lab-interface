@@ -38,7 +38,7 @@ int main() {
     /*****************************
      *            LOOP           *
      *****************************/
-    while(true) {
+    while (true) {
         delay_time = 500;
         auto selected = menu.menu_loop();
         SensorType sensorType;

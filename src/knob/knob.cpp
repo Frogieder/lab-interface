@@ -37,7 +37,7 @@ knob_state Knob::tick() {
     // knob state
     bool is_clk = gpio_get(clk_pin);
     if (!was_clk && is_clk)
-        rotation =  gpio_get(dt_pin) ? 1 : -1;
+        rotation = gpio_get(dt_pin) ? 1 : -1;
     was_clk = is_clk;
 
     return {rotation, press};
