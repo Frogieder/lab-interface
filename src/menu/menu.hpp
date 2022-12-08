@@ -22,7 +22,9 @@
 
 #define MENU_ROOT 0
 
-#define MENU_ATTACH (0x1 | FLAG_FUNCTION)
+#define MENU_MANAGE 0x1
+#define MENU_MANAGE_LIST (0x10 | FLAG_FUNCTION)
+#define MENU_MANAGE_ATTACH (0x11 | FLAG_FUNCTION)
 //#define MENU_ATTACH_SCAN 0x11
 //#define MENU_ATTACH_ADD 0x12
 
@@ -61,26 +63,27 @@ class Menu {
     pico_ssd1306::SSD1306 *display;
     Knob *knob;
     layout_t layout = {
-        {MENU_ROOT,      {"Main Menu",     {MENU_ATTACH, MENU_MONITOR, MENU_START, MENU_CALIBRATE, MENU_DUMMY_ONE, MENU_DUMMY_TWO}}},
-        /* Attaching submenu */
-        {MENU_ATTACH,    {"Attach",        {}}},
-//            {MENU_ATTACH_ADD, {"Add sensor", {MENU_ATTACH}}},
-//            {MENU_ATTACH_SCAN, {"Scan", {MENU_ATTACH}}},
+        {MENU_ROOT,
+                             {"Main Menu",     {MENU_MANAGE,      MENU_MONITOR, MENU_START, MENU_CALIBRATE, MENU_DUMMY_ONE, MENU_DUMMY_TWO}}},
+        /* Management submenu */
+        {MENU_MANAGE,        {"Manage",        {MENU_ROOT, MENU_MANAGE_LIST, MENU_MANAGE_ATTACH}}},
+        {MENU_MANAGE_ATTACH, {"Attach",        {}}},
+        {MENU_MANAGE_LIST,   {"List sensors",  {}}},
         /* Monitoring submenu */
-        {MENU_MONITOR,   {"Monitor",       {MENU_ROOT}}},
+        {MENU_MONITOR,       {"Monitor",       {MENU_ROOT}}},
         /* Measurement submenu */
-        {MENU_START,     {"Measure",       {MENU_ROOT}}},
+        {MENU_START,         {"Measure",       {MENU_ROOT}}},
         /* Calibration menu */
-        {MENU_CALIBRATE, {"Calibrate",     {MENU_ROOT}}},
+        {MENU_CALIBRATE,     {"Calibrate",     {MENU_ROOT}}},
         /* Dummies */
-        {MENU_DUMMY_ONE, {"Dummy 1",       {MENU_ROOT}}},
-        {MENU_DUMMY_TWO, {"Dummy 2",       {MENU_ROOT}}},
+        {MENU_DUMMY_ONE,     {"Dummy 1",       {MENU_ROOT}}},
+        {MENU_DUMMY_TWO,     {"Dummy 2",       {MENU_ROOT}}},
 
         /* SENSORS */
-        {SENSORS_MENU,   {"Select sensor", {MENU_ROOT,   SENSOR_CLOCK}}},
+        {SENSORS_MENU,       {"Select sensor", {MENU_ROOT,        SENSOR_CLOCK}}},
 
         /* SPECIAL */
-        {MENU_CANCEL,    {"Cancel",        {MENU_ROOT}}}
+        {MENU_CANCEL,        {"Cancel",        {MENU_ROOT}}}
     };
 
 

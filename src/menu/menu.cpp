@@ -46,9 +46,9 @@ uint32_t Menu::menu_loop(uint32_t start) {
             if (state.rotation != 0) {
                 pos += state.rotation;
                 if (pos == 0xff)
-                    pos = 0;
-                else if (pos >= layout[menu].second.size())
                     pos = layout[menu].second.size() - 1;
+                else if (pos >= layout[menu].second.size())
+                    pos = 0;
                 break;
             }
             /* knob pressing */

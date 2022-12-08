@@ -43,7 +43,7 @@ int main() {
         auto selected = menu.menu_loop();
         SensorType sensorType;
         switch (selected) {
-            case MENU_ATTACH:
+            case MENU_MANAGE_ATTACH:
                 delay_time = 100;
                 sensorType = menu.choose_sensor();
                 delay_time = 300;
