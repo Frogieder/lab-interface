@@ -14,6 +14,7 @@ Knob::Knob(uint _clk_pin, uint _dt_pin, uint _key_pin) {
     gpio_set_dir(dt_pin, GPIO_IN);
     gpio_init(key_pin);
     gpio_set_dir(key_pin, GPIO_IN);
+    this->next_press = 0;
 }
 
 knob_state Knob::tick() {
@@ -21,9 +22,15 @@ knob_state Knob::tick() {
     int rotation = 0;
 
     // button state
-    bool is_pressed = gpio_get(key_pin);
-    if (was_pressed && !is_pressed)
-        press = true;
+    bool is_pressed = !gpio_get(key_pin);
+    if (!was_pressed && is_pressed) {
+        // check if the debounce cooldown is over
+        if (next_press < time_us_64())
+            press = true;
+    } else if (was_pressed && !is_pressed) {
+        // when button is released, start the debounce cooldown
+        next_press = time_us_64() + KNOB_DEBOUNCE_TIME_US;
+    }
 
     was_pressed = is_pressed;
 
