@@ -85,7 +85,7 @@ class Menu {
 
 
     layout_t sensor_menu_layout = {
-        {MENU_ROOT, {"All sensors",  {MENU_CANCEL, 0x1, 0x2, 0x3, 0x4, 0x5}}},
+        {MENU_ROOT, {"All sensors",  {MENU_CANCEL, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6}}},
         {MENU_CANCEL, {"Back to menu", {MENU_ROOT}}},
         /* Force */
         {0x1,       {"Force sensor", {MENU_ROOT,   0x10}}},
@@ -103,6 +103,9 @@ class Menu {
         /* Hall effect */
         {0x5,       {"Hall",         {MENU_ROOT,   0x50}}},
         {0x50,      {"AD22151",      {}}},
+        /* Timers */
+        {0x6,      {"Clock",         {MENU_ROOT, 0x60}}},
+        {0x60,     {"Builtin clock", {}}}
     };
 
 
@@ -114,6 +117,7 @@ class Menu {
         {0x30, SensorType::accel_ADXL312},
         {0x40, SensorType::distance_hcsr04},
         {0x50, SensorType::hall_AD22151},
+        {0x60, SensorType::clock_builtin},
         {MENU_CANCEL, SensorType::none}
     };
 
