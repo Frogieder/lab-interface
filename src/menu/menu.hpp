@@ -86,6 +86,7 @@ class Menu {
 
     layout_t sensor_menu_layout = {
         {MENU_ROOT, {"All sensors",  {MENU_CANCEL, 0x1, 0x2, 0x3, 0x4, 0x5}}},
+        {MENU_CANCEL, {"Back to menu", {MENU_ROOT}}},
         /* Force */
         {0x1,       {"Force sensor", {MENU_ROOT,   0x10}}},
         {0x10,      {"TE: FX29K0",   {}}},
@@ -113,6 +114,7 @@ class Menu {
         {0x30, SensorType::accel_ADXL312},
         {0x40, SensorType::distance_hcsr04},
         {0x50, SensorType::hall_AD22151},
+        {MENU_CANCEL, SensorType::none}
     };
 
 public:

@@ -2,7 +2,7 @@
 
 int delay_time = 500;
 
-void core1_entry() {
+[[noreturn]] void core1_entry() {
     while (true) {
         gpio_put(PICO_DEFAULT_LED_PIN, !gpio_get(PICO_DEFAULT_LED_PIN));
         sleep_ms(delay_time);

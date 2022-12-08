@@ -55,9 +55,9 @@ bool Sensors::add_sensor(SensorType sensor_type) {
         case hall_AD22151:
 //            break;
         case distance_hcsr04:
-//            break;
+            break;
         case none:
-
+            return true;
             break;
     }
     return false;

@@ -9,9 +9,7 @@ Menu::Menu(pico_ssd1306::SSD1306 *_display, Knob *_knob) {
     knob = _knob;
 }
 
-Menu::~Menu() {
-
-}
+Menu::~Menu() = default;
 
 void Menu::display_menu(uint32_t menu, uint8_t pos, layout_t * _layout) {
     if ((*_layout).contains(menu)) {
