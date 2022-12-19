@@ -38,7 +38,7 @@ int main() {
 
     uint32_t start = 0;
 
-    SensorClock clockkk;
+    BuiltinClock clockkk;
     std::vector<iSensor*> listtt;
     listtt.push_back(&clockkk);
     layout_t layouttt = {};
