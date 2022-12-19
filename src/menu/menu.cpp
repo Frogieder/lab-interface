@@ -4,9 +4,10 @@
 
 #include "menu.hpp"
 
-Menu::Menu(pico_ssd1306::SSD1306 *_display, Knob *_knob) {
+Menu::Menu(pico_ssd1306::SSD1306 *_display, Knob *_knob, Sensors *_sensors) {
     display = _display;
     knob = _knob;
+    sensors = _sensors;
 }
 
 Menu::~Menu() = default;
@@ -139,8 +140,8 @@ void Menu::browse_sensors() {
     uint8_t pos = 0;
     uint32_t current_sensor = 0;
     while (true) {
-        display_menu(menu, pos, &connected_sensor_list_layout);
         display->clear();
+        display_menu(menu, pos, &connected_sensor_list_layout);
 
         /* wait for user input */
         while (true) {
@@ -166,7 +167,7 @@ void Menu::browse_sensors() {
                 if (menu & FLAG_FUNCTION) {
                     switch (menu) {
                         case MENU_SENSORS_MONITOR:
-
+                            this->monitor_sensor(current_sensor & (~FLAG_SENSOR));
                             menu = current_sensor;
                             break;
                         case MENU_SENSORS_REMOVE:
@@ -181,6 +182,26 @@ void Menu::browse_sensors() {
     }
 }
 
-void Menu::monitor_sensor(uint32_t) {
+void Menu::monitor_sensor(uint32_t sensor) {
+    auto font = choose_font((*sensors).list[sensor]->name().length());
+    while (true) {
+        knob_state state = knob->tick();
+        if (state.press) {
+            break;
+        }
+        display->clear();
+        pico_ssd1306::drawText(display, font, (*sensors).list[sensor]->name(), 0, 0);
+        pico_ssd1306::drawText(display, font_8x8, std::to_string((*sensors).list[sensor]->get_blocking()), 0, 20);
+        display->sendBuffer();
+    }
+}
 
+unsigned char *Menu::choose_font(uint length) {
+    if (length <= 10) {
+        return (unsigned char *) font_12x16;
+    }
+    else if (length <= 16) {
+        return (unsigned char *) font_8x8;
+    }
+    return (unsigned char *) font_5x8;
 }

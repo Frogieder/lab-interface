@@ -30,9 +30,10 @@ int main() {
 
     Knob knob = Knob(KNOB_CLK_PIN, KNOB_DT_PIN, KNOB_KEY_PIN);
 
-    Menu menu = Menu(&display, &knob);
-
     Sensors sensors = Sensors();
+
+    Menu menu = Menu(&display, &knob, &sensors);
+
 
     multicore_launch_core1(core1_entry);
 

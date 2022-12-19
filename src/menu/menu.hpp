@@ -65,6 +65,7 @@ class Menu {
      */
     pico_ssd1306::SSD1306 *display;
     Knob *knob;
+    Sensors *sensors;
     layout_t main_menu_layout = {
         {MENU_ROOT,
                              {"Main Menu",     {MENU_MANAGE, MENU_MONITOR,     MENU_START, MENU_CALIBRATE, MENU_DUMMY_ONE, MENU_DUMMY_TWO}}},
@@ -135,7 +136,7 @@ class Menu {
     };
 
 public:
-    explicit Menu(pico_ssd1306::SSD1306 *_display, Knob *_knob);
+    explicit Menu(pico_ssd1306::SSD1306 *_display, Knob *_knob, Sensors *_sensors);
 
     ~Menu();
 
@@ -151,7 +152,7 @@ public:
     /** prompts the user to choose a sensor from the list */
     SensorType choose_sensor();
 
-    void monitor_sensor(uint32_t);
+    void monitor_sensor(uint32_t sensor);
 
     /** call this in case everything fails and cry */
     [[noreturn]] void fatal_error(std::string_view text = "");
@@ -161,6 +162,8 @@ public:
 
     /** Browse and manage attached sensors */
     void browse_sensors();
+
+    static unsigned char *choose_font(uint length);
 };
 
 
