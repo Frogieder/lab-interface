@@ -4,11 +4,9 @@
 
 #include "sensors.hpp"
 
-#include <memory>
-
-
 /* CLOCK */
 bool SensorClock::init() {
+    this->set_scale(5);
     init_done = true;
     return init_done;
 }
@@ -18,7 +16,13 @@ int16_t SensorClock::get_blocking() {
 }
 
 bool SensorClock::set_scale(int _scale) {
-    this->scale = _scale;
+    if (scale < 0)
+        return false;
+    this->scale = 1;
+    for (int i = 0; i < _scale; ++i)
+        this->scale *= 10;
+
+    this->decimal_points = 6 > _scale ? 6 - _scale : 0;
     return true;
 }
 
@@ -38,15 +42,17 @@ SensorClock::~SensorClock() = default;
 
 SensorClock::SensorClock() {
     this->init_done = false;
-    this->scale = 0;
+    this->scale = 1;
+    this->decimal_points = 6;
 };
 
-bool Sensors::add_sensor(SensorType sensor_type) {
+bool Sensors::add_sensor(SensorType sensor_type, bool init) {
 //    list.push_back(std::shared_ptr<NoSensor>());
     switch (sensor_type) {
         case SensorType::clock_builtin:
             list.push_back(std::make_shared<SensorClock>());
-//            list.push_back(new SensorClock);
+            if (init)
+                list.at(list.size()-1)->init();
             return true;
 //            break;
         case force_fx29k0:

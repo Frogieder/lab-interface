@@ -161,17 +161,26 @@ void Menu::browse_sensors() {
                     return;
                 if (menu & FLAG_SENSOR) {
                     current_sensor = menu;
+                    break;
+                }
+                if (menu & FLAG_FUNCTION) {
                     switch (menu) {
-//                        case MENU_SENSORS_MONITOR:
-//                            break;
+                        case MENU_SENSORS_MONITOR:
+
+                            menu = current_sensor;
+                            break;
+                        case MENU_SENSORS_REMOVE:
                         default:
                             this->fatal_error("sensor function " + std::to_string(menu));
                     }
-                    break;
                 }
                 pos = 0;
                 break;
             }
         }
     }
+}
+
+void Menu::monitor_sensor(uint32_t) {
+
 }

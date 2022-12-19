@@ -151,6 +151,8 @@ public:
     /** prompts the user to choose a sensor from the list */
     SensorType choose_sensor();
 
+    void monitor_sensor(uint32_t);
+
     /** call this in case everything fails and cry */
     [[noreturn]] void fatal_error(std::string_view text = "");
 
