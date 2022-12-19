@@ -36,7 +36,7 @@ uint32_t Menu::menu_loop(uint32_t start) {
     uint32_t menu = start;
     uint8_t pos = 0;
     while (true) {
-        display_menu(menu, pos, &(this->layout));
+        display_menu(menu, pos, &(this->main_menu_layout));
         display->clear();
 
         /* wait for user input */
@@ -46,14 +46,14 @@ uint32_t Menu::menu_loop(uint32_t start) {
             if (state.rotation != 0) {
                 pos += state.rotation;
                 if (pos == 0xff)
-                    pos = layout[menu].second.size() - 1;
-                else if (pos >= layout[menu].second.size())
                     pos = 0;
+                else if (pos >= main_menu_layout[menu].second.size())
+                    pos = main_menu_layout[menu].second.size() - 1;
                 break;
             }
             /* knob pressing */
             if (state.press) {
-                menu = layout[menu].second[pos];
+                menu = main_menu_layout[menu].second[pos];
                 if (menu & FLAG_FUNCTION)
                     return menu;
                 pos = 0;
@@ -86,7 +86,7 @@ SensorType Menu::choose_sensor() {
     uint32_t menu = 0;
     uint8_t pos = 0;
     while (true) {
-        display_menu(menu, pos, &sensor_menu_layout);
+        display_menu(menu, pos, &sensor_selection_layout);
         display->clear();
 
         /* wait for user input */
@@ -97,13 +97,13 @@ SensorType Menu::choose_sensor() {
                 pos += state.rotation;
                 if (pos == 0xff)
                     pos = 0;
-                else if (pos >= sensor_menu_layout[menu].second.size())
-                    pos = sensor_menu_layout[menu].second.size() - 1;
+                else if (pos >= sensor_selection_layout[menu].second.size())
+                    pos = sensor_selection_layout[menu].second.size() - 1;
                 break;
             }
             /* knob pressing */
             if (state.press) {
-                menu = sensor_menu_layout[menu].second[pos];
+                menu = sensor_selection_layout[menu].second[pos];
                 if (menu > 0xf) {
                     if (sensor_layout_enum_map.contains(menu))
                         return sensor_layout_enum_map[menu];
@@ -116,5 +116,62 @@ SensorType Menu::choose_sensor() {
         }
 
     }
-    return temp_gy906;
+    return SensorType::none;
+}
+
+void Menu::generate_sensor_list(sensorlist_t *sensorlist) {
+    for (auto& elem : this->connected_sensor_list_layout | std::views::reverse) {
+        if (elem.first & FLAG_SENSOR)
+            this->connected_sensor_list_layout.erase(elem.first);
+    }
+    this->connected_sensor_list_layout[MENU_ROOT].second.erase(connected_sensor_list_layout[MENU_ROOT].second.begin() + 1, connected_sensor_list_layout[MENU_ROOT].second.end());
+
+    int i = FLAG_SENSOR;
+    for (const auto& sensor : *sensorlist){
+        this->connected_sensor_list_layout[i] = {sensor->name(), {MENU_ROOT, MENU_SENSORS_MONITOR, MENU_SENSORS_REMOVE}};
+        this-> connected_sensor_list_layout[MENU_ROOT].second.push_back(i);
+        i++;
+    }
+}
+
+void Menu::browse_sensors() {
+    uint32_t menu = 0;
+    uint8_t pos = 0;
+    uint32_t current_sensor = 0;
+    while (true) {
+        display_menu(menu, pos, &connected_sensor_list_layout);
+        display->clear();
+
+        /* wait for user input */
+        while (true) {
+            /* knob rotation */
+            knob_state state = this->knob->tick();
+            if (state.rotation != 0) {
+                pos += state.rotation;
+                if (pos == 0xff)
+                    pos = 0;
+                else if (pos >= connected_sensor_list_layout[menu].second.size())
+                    pos = connected_sensor_list_layout[menu].second.size() - 1;
+                break;
+            }
+            /* knob pressing */
+            if (state.press) {
+                menu = connected_sensor_list_layout[menu].second[pos];
+                if (menu == MENU_CANCEL)
+                    return;
+                if (menu & FLAG_SENSOR) {
+                    current_sensor = menu;
+                    switch (menu) {
+//                        case MENU_SENSORS_MONITOR:
+//                            break;
+                        default:
+                            this->fatal_error("sensor function " + std::to_string(menu));
+                    }
+                    break;
+                }
+                pos = 0;
+                break;
+            }
+        }
+    }
 }

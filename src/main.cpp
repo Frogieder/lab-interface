@@ -35,20 +35,34 @@ int main() {
     Sensors sensors = Sensors();
 
     multicore_launch_core1(core1_entry);
+
+    uint32_t start = 0;
+
+    SensorClock clockkk;
+    std::vector<iSensor*> listtt;
+    listtt.push_back(&clockkk);
+    layout_t layouttt = {};
+    for (const auto& sensor : listtt)
+        layouttt[420] = {sensor->name(), {0}};
+
     /*****************************
      *            LOOP           *
      *****************************/
     while (true) {
-        delay_time = 500;
-        auto selected = menu.menu_loop();
+        auto selected = menu.menu_loop(start);
+        start = 0;
         SensorType sensorType;
         switch (selected) {
             case MENU_MANAGE_ATTACH:
-                delay_time = 100;
                 sensorType = menu.choose_sensor();
-                delay_time = 300;
-                if (!sensors.add_sensor(sensorType))
+                if (sensorType == SensorType::none)
+                    start = MENU_MANAGE;
+                else if (!sensors.add_sensor(sensorType))
                     menu.fatal_error("Sensor not implemented");
+                break;
+            case MENU_MANAGE_LIST:
+                menu.generate_sensor_list(&sensors.list);
+                menu.browse_sensors();
                 break;
             default:
                 menu.fatal_error("Function not implemented");

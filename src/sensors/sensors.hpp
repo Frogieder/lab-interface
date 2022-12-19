@@ -31,7 +31,12 @@ enum SensorType {
 /** interface class for all sensor types */
 class iSensor {
 public:
-    int scale{};
+    virtual std::string_view name() const = 0;
+
+    bool init_done = false;
+    int scale = 0;
+
+    iSensor() = default;
 
     virtual ~iSensor() = default;
 
@@ -54,12 +59,18 @@ public:
     virtual int16_t get_blocking() = 0;
 };
 
+
+typedef std::vector<std::shared_ptr<iSensor>> sensorlist_t;
+
 class SensorClock : public iSensor {
+public:
+    [[nodiscard]] std::string_view name() const override {
+        return "Builtin Clock";
+    }
+
+    SensorClock();
 
     ~SensorClock() override;
-
-    bool init_done = false;
-    int scale = 0;
 
     bool calibrate() override;
 
@@ -97,6 +108,5 @@ public:
 //    std::vector<iSensor*> list {};
     bool add_sensor(SensorType sensor_type);
 };
-
 
 #endif //LAB_INTERFACE_SENSORS_H

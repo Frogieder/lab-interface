@@ -8,7 +8,7 @@
 #include <map>
 #include <vector>
 #include <string_view>
-//#include <sstream>
+#include "ranges"
 #include "../sensors/sensors.hpp"
 #include "pico/stdlib.h"
 #include "../knob/knob.hpp"
@@ -36,6 +36,9 @@
 
 #define MENU_CANCEL (FLAG_CANCEL | 1)
 
+#define MENU_SENSORS_MONITOR (0x101 | FLAG_FUNCTION)
+#define MENU_SENSORS_REMOVE (0x102 | FLAG_FUNCTION)
+
 #define SENSORS_MENU (0 | FLAG_SENSOR)
 #define SENSOR_CLOCK (1 | FLAG_SENSOR)
 
@@ -62,11 +65,11 @@ class Menu {
      */
     pico_ssd1306::SSD1306 *display;
     Knob *knob;
-    layout_t layout = {
+    layout_t main_menu_layout = {
         {MENU_ROOT,
-                             {"Main Menu",     {MENU_MANAGE,      MENU_MONITOR, MENU_START, MENU_CALIBRATE, MENU_DUMMY_ONE, MENU_DUMMY_TWO}}},
+                             {"Main Menu",     {MENU_MANAGE, MENU_MONITOR,     MENU_START, MENU_CALIBRATE, MENU_DUMMY_ONE, MENU_DUMMY_TWO}}},
         /* Management submenu */
-        {MENU_MANAGE,        {"Manage",        {MENU_ROOT, MENU_MANAGE_LIST, MENU_MANAGE_ATTACH}}},
+        {MENU_MANAGE,        {"Manage",        {MENU_ROOT,   MENU_MANAGE_LIST, MENU_MANAGE_ATTACH}}},
         {MENU_MANAGE_ATTACH, {"Attach",        {}}},
         {MENU_MANAGE_LIST,   {"List sensors",  {}}},
         /* Monitoring submenu */
@@ -79,15 +82,17 @@ class Menu {
         {MENU_DUMMY_ONE,     {"Dummy 1",       {MENU_ROOT}}},
         {MENU_DUMMY_TWO,     {"Dummy 2",       {MENU_ROOT}}},
 
+        // I forgot why I need it, but without this I can't get the sensor selection to work
+        // TODO: Find why it's needed and then safely remove it
         /* SENSORS */
-        {SENSORS_MENU,       {"Select sensor", {MENU_ROOT,        SENSOR_CLOCK}}},
+        {SENSORS_MENU,       {"Select sensor", {MENU_ROOT,   SENSOR_CLOCK}}},
 
         /* SPECIAL */
         {MENU_CANCEL,        {"Cancel",        {MENU_ROOT}}}
     };
 
 
-    layout_t sensor_menu_layout = {
+    layout_t sensor_selection_layout = {
         {MENU_ROOT,   {"All sensors",   {MENU_CANCEL, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6}}},
         {MENU_CANCEL, {"Back to menu",  {MENU_ROOT}}},
         /* Force */
@@ -124,6 +129,11 @@ class Menu {
         {MENU_CANCEL, SensorType::none}
     };
 
+    layout_t connected_sensor_list_layout = {
+        {MENU_ROOT,   {"Select sensor", {MENU_CANCEL}}},
+        {MENU_CANCEL, {"Back to menu",    {}}}
+    };
+
 public:
     explicit Menu(pico_ssd1306::SSD1306 *_display, Knob *_knob);
 
@@ -143,6 +153,12 @@ public:
 
     /** call this in case everything fails and cry */
     [[noreturn]] void fatal_error(std::string_view text = "");
+
+    /** Update the contents of the sensor list */
+    void generate_sensor_list(sensorlist_t * sensorlist);
+
+    /** Browse and manage attached sensors */
+    void browse_sensors();
 };
 
 

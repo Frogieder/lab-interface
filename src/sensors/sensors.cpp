@@ -4,6 +4,8 @@
 
 #include "sensors.hpp"
 
+#include <memory>
+
 
 /* CLOCK */
 bool SensorClock::init() {
@@ -32,15 +34,18 @@ bool SensorClock::deinit() {
     return true;
 }
 
-SensorClock::~SensorClock() {
+SensorClock::~SensorClock() = default;
 
+SensorClock::SensorClock() {
+    this->init_done = false;
+    this->scale = 0;
 };
 
 bool Sensors::add_sensor(SensorType sensor_type) {
 //    list.push_back(std::shared_ptr<NoSensor>());
     switch (sensor_type) {
         case SensorType::clock_builtin:
-            list.push_back(std::shared_ptr<SensorClock>());
+            list.push_back(std::make_shared<SensorClock>());
 //            list.push_back(new SensorClock);
             return true;
 //            break;
