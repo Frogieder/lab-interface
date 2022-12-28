@@ -28,8 +28,8 @@
 #define I2C_PIN_SDA 2
 #define I2C_PIN_SCL 3
 
-#define KNOB_CLK_PIN 15
-#define KNOB_DT_PIN 14
-#define KNOB_KEY_PIN 13
+#define KNOB_CLK_PIN 4
+#define KNOB_DT_PIN 5
+#define KNOB_KEY_PIN 6
 
 #endif //TEST_PROJECT_MAIN_H
