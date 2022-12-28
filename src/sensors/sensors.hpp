@@ -28,14 +28,43 @@ typedef std::vector<std::shared_ptr<iSensor>> sensorlist_t;
 //    int16_t get_blocking() override { return 0; }
 //};
 
+// TODO: change my other enums to enum classes
+
+/** Enum defining possible connection states of every port on the device */
+enum class ConnectionState {
+    Available,
+    Connected,
+    /** Port occupied by neighbouring port
+     *
+     * For example, HCSR-04 is connected to I2C1, but doesn't use I2C protocol.
+     * This renders I2C0 and I2C2 unusable, because they rely on multiplexing connections, which is only possible
+     * with regular I2C.
+     */
+    Unavailable,
+    Error
+};
+
+/** map of all connections */
+struct Connections {
+    ConnectionState A0 = ConnectionState::Available;
+    ConnectionState A1 = ConnectionState::Available;
+    ConnectionState A2 = ConnectionState::Available;
+    ConnectionState SPI0 = ConnectionState::Available;
+    ConnectionState SPI1 = ConnectionState::Available;
+    ConnectionState I2C0 = ConnectionState::Available;
+    ConnectionState I2C1 = ConnectionState::Available;
+    ConnectionState I2C2 = ConnectionState::Available;
+    ConnectionState UART0 = ConnectionState::Available;
+};
+
 /** container for all connected sensors */
-class Sensors {
-public:
+struct Sensors {
     Sensors();
 
     std::vector<std::shared_ptr<iSensor>> list{};
 
-//    std::vector<iSensor*> list {};
+    Connections connections;
+
     bool add_sensor(SensorType sensor_type, bool init=true);
 };
 

@@ -12,7 +12,7 @@ bool Sensors::add_sensor(SensorType sensor_type, bool init) {
         case SensorType::clock_builtin:
             list.push_back(std::make_shared<BuiltinClock>());
             if (init)
-                list.at(list.size()-1)->init();
+                list.at(list.size() - 1)->init();
             return true;
 //            break;
         case force_fx29k0:
@@ -34,8 +34,7 @@ bool Sensors::add_sensor(SensorType sensor_type, bool init) {
     return false;
 }
 
-Sensors::Sensors() {
+Sensors::Sensors()
+    : connections() {
     list.reserve(8);
-//    for (int i = 0; i < 8; i++)
-//        list.push_back(std::shared_ptr<NoSensor>());
 }
