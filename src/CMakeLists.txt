@@ -1,4 +1,3 @@
-add_subdirectory(misc)
 add_subdirectory(menu)
 add_subdirectory(knob)
 add_subdirectory(sensors)
@@ -13,7 +12,6 @@ target_link_libraries(lab_interface
         pico_bootsel_via_double_reset
         hardware_i2c
         pico_multicore
-        misc
         menu
         knob
         sensors

@@ -18,7 +18,6 @@
 #include "../pico-ssd1306/shapeRenderer/ShapeRenderer.h"
 #include "../pico-ssd1306/textRenderer/TextRenderer.h"
 
-#include "misc/miscellaneous_functions.hpp"
 #include "menu/menu.hpp"
 #include "knob/knob.hpp"
 #include "sensors/sensors.hpp"
