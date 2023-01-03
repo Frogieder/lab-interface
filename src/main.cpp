@@ -39,13 +39,6 @@ int main() {
 
     uint32_t start = 0;
 
-    BuiltinClock clockkk;
-    std::vector<iSensor*> listtt;
-    listtt.push_back(&clockkk);
-    layout_t layouttt = {};
-    for (const auto& sensor : listtt)
-        layouttt[420] = {sensor->name(), {0}};
-
     /*****************************
      *            LOOP           *
      *****************************/
