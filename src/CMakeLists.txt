@@ -4,7 +4,6 @@ add_subdirectory(sensors)
 
 add_executable(lab_interface
         main.cpp
-#        misc/miscellaneous_functions.cpp
         )
 
 target_link_libraries(lab_interface

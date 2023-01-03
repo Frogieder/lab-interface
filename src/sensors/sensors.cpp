@@ -7,7 +7,6 @@
 /* CLOCK */
 
 bool Sensors::add_sensor(SensorType sensor_type, bool init) {
-//    list.push_back(std::shared_ptr<NoSensor>());
     switch (sensor_type) {
         case SensorType::clock_builtin:
             list.push_back(std::make_shared<BuiltinClock>());

@@ -25,8 +25,6 @@
 #define MENU_MANAGE 0x1
 #define MENU_MANAGE_LIST (0x10 | FLAG_FUNCTION)
 #define MENU_MANAGE_ATTACH (0x11 | FLAG_FUNCTION)
-//#define MENU_ATTACH_SCAN 0x11
-//#define MENU_ATTACH_ADD 0x12
 
 #define MENU_MONITOR 0x2
 #define MENU_START 0x3
@@ -44,17 +42,6 @@
 
 typedef std::map<uint32_t, std::pair<std::string_view, std::vector<uint32_t>>> layout_t;
 
-
-//{"TE: FX29K0", SensorType::force_fx29k0} 0x10
-//"Temperature",
-//{   "GY906",   SensorType::temp_gy906},
-//{"2c55", SensorType::temp_2c55}
-//"Acceleration",
-//{   "ADXL312", SensorType::accel_ADXL312}
-//"Hall effect",
-//{   "AD22151", SensorType::hall_AD22151}
-//"Distance",
-//{   "HC-SR04", SensorType::distance_hcsr04}
 
 class Menu {
 
