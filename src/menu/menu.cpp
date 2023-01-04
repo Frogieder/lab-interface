@@ -77,6 +77,7 @@ std::string_view Menu::get_item(uint32_t menu, uint32_t pos, layout_t *_layout) 
 }
 
 [[noreturn]] void Menu::fatal_error(std::string_view text) {
+    display->clear();
     pico_ssd1306::drawText(display, font_12x16, "Error", 0, 0);
     pico_ssd1306::drawText(display, font_5x8, text, 0, 18);
     display->sendBuffer();
