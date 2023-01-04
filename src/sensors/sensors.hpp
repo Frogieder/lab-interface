@@ -47,28 +47,22 @@ enum class ConnectionState {
     Error
 };
 
-/** map of all connections */
-struct Connections {
-    ConnectionState A0 = ConnectionState::Available;
-    ConnectionState A1 = ConnectionState::Available;
-    ConnectionState A2 = ConnectionState::Available;
-    ConnectionState SPI0 = ConnectionState::Available;
-    ConnectionState SPI1 = ConnectionState::Available;
-    ConnectionState I2C0 = ConnectionState::Available;
-    ConnectionState I2C1 = ConnectionState::Available;
-    ConnectionState I2C2 = ConnectionState::Available;
-    ConnectionState UART0 = ConnectionState::Available;
-};
-
 /** container for all connected sensors */
-struct Sensors {
+class Sensors {
+private:
+    /** map of all connections */
+    std::map<Port, ConnectionState> connections;
+
+public:
     Sensors();
 
     std::vector<std::shared_ptr<iSensor>> list{};
 
-    Connections connections;
-
     bool add_sensor(SensorType sensor_type, bool init=true);
+
+    ConnectionState get_state(Port port);
+
+    void set_state(Port port, ConnectionState state);
 };
 
 #endif //LAB_INTERFACE_SENSORS_H

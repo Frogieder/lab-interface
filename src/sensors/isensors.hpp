@@ -5,13 +5,23 @@
 #ifndef LAB_INTERFACE_ISENSORS_HPP
 #define LAB_INTERFACE_ISENSORS_HPP
 
+#define SENSOR_I2C i2c0
+
 #include "vector"
+#include "map"
 #include <bits/shared_ptr.h>
 #include "pico/stdlib.h" // NOLINT(modernize-deprecated-headers)
 #include "ctime"
 #include "hardware/i2c.h"
+#include "hardware/adc.h"
 
-
+enum class Port {
+    A0, A1, A2,
+    SPI0, SPI1,
+    I2C0, I2C1, I2C2,
+    UART0,
+    None
+};
 
 enum SensorType {
     none,
@@ -24,11 +34,29 @@ enum SensorType {
     clock_builtin
 };
 
+const std::map<Port, std::tuple<uint, uint, uint, uint>> port_mapping ={
+    {Port::A0, {26, 26, 26, 26}},
+    {Port::A1, {27, 27, 27, 27}},
+    {Port::A2, {28, 28, 28, 28}},
+    /* RX, TX, SCL, CS */
+    {Port::SPI0, {16, 18, 19, 17}},
+    {Port::SPI1, {16, 18, 19, 22}},
+    /* SDA, SCL */
+    {Port::I2C0, {20, 21, 20, 21}},
+    {Port::I2C1, {20, 21, 20, 21}},
+    {Port::I2C2, {20, 21, 20, 21}},
+    /* RX, TX */
+    {Port::UART0, {9, 8, 9, 8}},
+    /* Don't use the provided pins */
+    {Port::None, {25, 25, 25, 25}}
+};
+
 class iSensor {
 public:
     bool init_done = false;
     int scale = 0;
     int decimal_points = 0;
+    Port port = Port::None;
 
     /** display name of the sensor in the menu */
     [[nodiscard]] virtual std::string_view name() const = 0;
@@ -41,7 +69,7 @@ public:
     virtual ~iSensor() = default;
 
     /** initialize sensor (runs only once) */
-    virtual bool init() = 0;
+    virtual bool init(Port) = 0;
 
     /** turn off the sensor (runs when sensor is told to disconnect) */
     virtual bool deinit() = 0;

@@ -6,6 +6,7 @@
 
 bool AD22151::init() {
     this->set_scale(5);
+    adc_init();
     init_done = true;
     return init_done;
 }

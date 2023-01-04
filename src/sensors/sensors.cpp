@@ -33,7 +33,21 @@ bool Sensors::add_sensor(SensorType sensor_type, bool init) {
     return false;
 }
 
-Sensors::Sensors()
-    : connections() {
-    list.reserve(8);
+Sensors::Sensors() {
+    // ADC initialization is done here only once,
+    // since it doesn't make sense to have it done individually for each analog sensor
+    adc_init();
+
+    // reserve capacity now to avoid future reallocations, as there will never be more than 11 connected sensors
+    list.reserve(11);
+}
+
+ConnectionState Sensors::get_state(Port port) {
+    if (this->connections.contains(port))
+        return connections[port];
+    else return ConnectionState::Available;
+}
+
+void Sensors::set_state(Port port, ConnectionState state) {
+    connections[port] = state;
 }

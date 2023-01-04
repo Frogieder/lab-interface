@@ -4,4 +4,8 @@ add_library(sensors
         AD22151.cpp
         )
 
-target_link_libraries(sensors pico_stdlib hardware_i2c)
+target_link_libraries(sensors
+        pico_stdlib
+        hardware_i2c
+        hardware_adc
+        )
