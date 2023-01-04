@@ -8,10 +8,13 @@
 #include "isensors.hpp"
 
 class AD22151 : public iSensor {
+    uint adc_num;
 public:
-    [[nodiscard]] std::string_view name() const override {return "Builtin Clock";}
+    [[nodiscard]] std::string_view name() const override {return "AD22151";}
 
     [[nodiscard]] uint n_values() const override {return 1;}
+
+    [[nodiscard]] std::vector<Port> get_compatible_ports() const override {return {Port::A0, Port::A1, Port::A2};};
 
     AD22151();
 
@@ -19,7 +22,7 @@ public:
 
     bool calibrate() override;
 
-    bool init() override;
+    bool init(Port port) override;
 
     bool deinit() override;
 

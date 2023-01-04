@@ -4,7 +4,7 @@
 
 #include "builtin_clock.hpp"
 
-bool BuiltinClock::init() {
+bool BuiltinClock::init(Port port) {
     this->set_scale(5);
     init_done = true;
     return init_done;

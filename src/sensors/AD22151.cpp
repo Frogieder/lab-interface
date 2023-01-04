@@ -4,15 +4,18 @@
 
 #include "AD22151.hpp"
 
-bool AD22151::init() {
-    this->set_scale(5);
-    adc_init();
+bool AD22151::init(Port port) {
+    this->set_scale(1);
+    this->port = port;
+    this->adc_num = std::get<0>(port_mapping.at(port)) - 26;
     init_done = true;
     return init_done;
 }
 
 int16_t AD22151::get_blocking() {
-    return (int16_t) ((time_us_32() / scale) & 0xffff);
+    adc_select_input(adc_num);
+    uint16_t result = adc_read();
+    return (int16_t)result;
 }
 
 bool AD22151::set_scale(int _scale) {

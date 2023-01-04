@@ -20,7 +20,21 @@ enum class Port {
     SPI0, SPI1,
     I2C0, I2C1, I2C2,
     UART0,
-    None
+    None, NoConnection
+};
+
+const std::map<Port, std::string_view> port_names = {
+    {Port::A0, "A0"},
+    {Port::A1, "A1"},
+    {Port::A2, "A2"},
+    {Port::SPI0, "SPI0"},
+    {Port::SPI1, "SPI1"},
+    {Port::I2C0, "I2C0"},
+    {Port::I2C1, "I2C1"},
+    {Port::I2C2, "I2C2"},
+    {Port::UART0, "UART0"},
+    {Port::None, "None"},
+    {Port::NoConnection, "NoConnection"}
 };
 
 enum SensorType {
@@ -48,6 +62,7 @@ const std::map<Port, std::tuple<uint, uint, uint, uint>> port_mapping ={
     /* RX, TX */
     {Port::UART0, {9, 8, 9, 8}},
     /* Don't use the provided pins */
+    {Port::NoConnection, {25, 25, 25, 25}},
     {Port::None, {25, 25, 25, 25}}
 };
 
@@ -57,6 +72,8 @@ public:
     int scale = 0;
     int decimal_points = 0;
     Port port = Port::None;
+
+    [[nodiscard]] virtual std::vector<Port> get_compatible_ports() const = 0;
 
     /** display name of the sensor in the menu */
     [[nodiscard]] virtual std::string_view name() const = 0;
@@ -69,7 +86,7 @@ public:
     virtual ~iSensor() = default;
 
     /** initialize sensor (runs only once) */
-    virtual bool init(Port) = 0;
+    virtual bool init(Port port) = 0;
 
     /** turn off the sensor (runs when sensor is told to disconnect) */
     virtual bool deinit() = 0;

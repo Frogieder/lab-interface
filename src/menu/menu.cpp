@@ -84,6 +84,24 @@ std::string_view Menu::get_item(uint32_t menu, uint32_t pos, layout_t *_layout) 
     while (true);
 }
 
+void Menu::generate_sensor_list(sensorlist_t *sensorlist) {
+    // Remove all the sensors from the list
+    for (auto& elem : this->connected_sensor_list_layout | std::views::reverse) {
+        if (elem.first & FLAG_SENSOR)
+            this->connected_sensor_list_layout.erase(elem.first);
+    }
+    // Remove links to sensors from MENU_ROOT
+    this->connected_sensor_list_layout[MENU_ROOT].second.erase(connected_sensor_list_layout[MENU_ROOT].second.begin() + 1, connected_sensor_list_layout[MENU_ROOT].second.end());
+
+    // Add current sensors to the list
+    int i = FLAG_SENSOR;
+    for (const auto& sensor : *sensorlist){
+        this->connected_sensor_list_layout[i] = {sensor->name(), {MENU_ROOT, MENU_SENSORS_MONITOR, MENU_SENSORS_REMOVE}};
+        this-> connected_sensor_list_layout[MENU_ROOT].second.push_back(i);
+        i++;
+    }
+}
+
 SensorType Menu::choose_sensor() {
     uint32_t menu = 0;
     uint8_t pos = 0;
@@ -119,21 +137,6 @@ SensorType Menu::choose_sensor() {
 
     }
     return SensorType::none;
-}
-
-void Menu::generate_sensor_list(sensorlist_t *sensorlist) {
-    for (auto& elem : this->connected_sensor_list_layout | std::views::reverse) {
-        if (elem.first & FLAG_SENSOR)
-            this->connected_sensor_list_layout.erase(elem.first);
-    }
-    this->connected_sensor_list_layout[MENU_ROOT].second.erase(connected_sensor_list_layout[MENU_ROOT].second.begin() + 1, connected_sensor_list_layout[MENU_ROOT].second.end());
-
-    int i = FLAG_SENSOR;
-    for (const auto& sensor : *sensorlist){
-        this->connected_sensor_list_layout[i] = {sensor->name(), {MENU_ROOT, MENU_SENSORS_MONITOR, MENU_SENSORS_REMOVE}};
-        this-> connected_sensor_list_layout[MENU_ROOT].second.push_back(i);
-        i++;
-    }
 }
 
 void Menu::browse_sensors() {
@@ -205,4 +208,48 @@ unsigned char *Menu::choose_font(uint length) {
         return (unsigned char *) font_8x8;
     }
     return (unsigned char *) font_5x8;
+}
+
+std::unique_ptr<layout_t> Menu::generate_port_list_layout(const std::vector<Port>& ports) { // NOLINT(readability-convert-member-functions-to-static)
+    auto result = std::make_unique<layout_t>();
+    (*result)[MENU_ROOT] = {"Choose port", {MENU_CANCEL}};
+    (*result)[MENU_CANCEL] = {"Cancel", {}};
+    for (int i = 0; i < ports.size(); ++i) {
+        if (sensors->get_state(ports[i]) != ConnectionState::Available)
+            continue;
+        (*result)[i | FLAG_FUNCTION] = {port_names.at(ports[i]), {}};
+        (*result)[MENU_ROOT].second.push_back(i | FLAG_FUNCTION);
+    }
+    return result;
+}
+
+Port Menu::choose_port(std::unique_ptr<layout_t> layout, const std::vector<Port>& ports) {
+    uint32_t menu = 0;
+    uint8_t pos = 0;
+    while (true) {
+        display_menu(menu, pos, layout.get());
+        display->clear();
+
+        /* wait for user input */
+        while (true) {
+            /* knob rotation */
+            knob_state state = this->knob->tick();
+            if (state.rotation != 0) {
+                pos += state.rotation;
+                if (pos == 0xff)
+                    pos = 0;
+                else if (pos >= (*layout).at(menu).second.size())
+                    pos = (*layout).at(menu).second.size() - 1;
+                break;
+            }
+            /* knob pressing */
+            if (state.press) {
+                menu = (*layout)[menu].second[pos];
+                if (menu == MENU_CANCEL)
+                    return Port::None;
+                return ports[menu & (~FLAG_FUNCTION)];
+                break;
+            }
+        }
+    }
 }

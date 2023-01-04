@@ -54,8 +54,8 @@ class Menu {
     Knob *knob;
     Sensors *sensors;
     layout_t main_menu_layout = {
-        {MENU_ROOT,
-                             {"Main Menu",     {MENU_MANAGE, MENU_MONITOR,     MENU_START, MENU_CALIBRATE, MENU_DUMMY_ONE, MENU_DUMMY_TWO}}},
+        {MENU_ROOT,          {"Main Menu",     {MENU_MANAGE, MENU_MONITOR,     MENU_START, MENU_CALIBRATE,
+                                                   MENU_DUMMY_ONE, MENU_DUMMY_TWO}}},
         /* Management submenu */
         {MENU_MANAGE,        {"Manage",        {MENU_ROOT,   MENU_MANAGE_LIST, MENU_MANAGE_ATTACH}}},
         {MENU_MANAGE_ATTACH, {"Attach",        {}}},
@@ -119,7 +119,9 @@ class Menu {
 
     layout_t connected_sensor_list_layout = {
         {MENU_ROOT,   {"Select sensor", {MENU_CANCEL}}},
-        {MENU_CANCEL, {"Back to menu",    {}}}
+        {MENU_CANCEL, {"Back to menu",  {}}},
+        {MENU_SENSORS_REMOVE, {"Detach", {}}},
+        {MENU_SENSORS_MONITOR, {"Monitor", {}}}
     };
 
 public:
@@ -139,17 +141,23 @@ public:
     /** prompts the user to choose a sensor from the list */
     SensorType choose_sensor();
 
+    /** prompts the user to choose a port for a sensor */
+    Port choose_port(std::unique_ptr<layout_t> layout, const std::vector<Port>& ports);
+
     void monitor_sensor(uint32_t sensor);
 
     /** call this in case everything fails and cry */
     [[noreturn]] void fatal_error(std::string_view text = "");
 
     /** Update the contents of the sensor list */
-    void generate_sensor_list(sensorlist_t * sensorlist);
+    void generate_sensor_list(sensorlist_t *sensorlist);
+
+    std::unique_ptr<layout_t> generate_port_list_layout(const std::vector<Port>& ports);
 
     /** Browse and manage attached sensors */
     void browse_sensors();
 
+    /** Return the font that can fit the text of given length */
     static unsigned char *choose_font(uint length);
 };
 

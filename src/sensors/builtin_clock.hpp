@@ -13,13 +13,15 @@ public:
 
     [[nodiscard]] uint n_values() const override {return 1;}
 
+    [[nodiscard]] std::vector<Port> get_compatible_ports() const override {return {Port::NoConnection};};
+
     BuiltinClock();
 
     ~BuiltinClock() override;
 
     bool calibrate() override;
 
-    bool init() override;
+    bool init(Port port) override;
 
     bool deinit() override;
 

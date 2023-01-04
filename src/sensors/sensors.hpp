@@ -58,7 +58,7 @@ public:
 
     std::vector<std::shared_ptr<iSensor>> list{};
 
-    bool add_sensor(SensorType sensor_type, bool init=true);
+    std::shared_ptr<iSensor> add_sensor(SensorType sensor_type);
 
     ConnectionState get_state(Port port);
 
