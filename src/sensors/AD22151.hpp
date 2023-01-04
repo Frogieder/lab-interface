@@ -2,20 +2,20 @@
 // Created by martin on 12/19/22.
 //
 
-#ifndef LAB_INTERFACE_BUILTIN_CLOCK_HPP
-#define LAB_INTERFACE_BUILTIN_CLOCK_HPP
+#ifndef LAB_INTERFACE_AD22151_HPP
+#define LAB_INTERFACE_AD22151_HPP
 
 #include "isensors.hpp"
 
-class BuiltinClock : public iSensor {
+class AD22151 : public iSensor {
 public:
     [[nodiscard]] std::string_view name() const override {return "Builtin Clock";}
 
     [[nodiscard]] uint n_values() const override {return 1;}
 
-    BuiltinClock();
+    AD22151();
 
-    ~BuiltinClock() override;
+    ~AD22151() override;
 
     bool calibrate() override;
 
@@ -34,4 +34,4 @@ public:
 
 
 
-#endif //LAB_INTERFACE_BUILTIN_CLOCK_HPP
+#endif //LAB_INTERFACE_AD22151_HPP

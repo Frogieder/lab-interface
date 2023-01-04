@@ -22,7 +22,7 @@
 #include "knob/knob.hpp"
 #include "sensors/sensors.hpp"
 
-#define I2C_PORT i2c1
+#define I2C_ PORT i2c1
 
 #define I2C_PIN_SDA 2
 #define I2C_PIN_SCL 3

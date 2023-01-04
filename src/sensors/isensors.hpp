@@ -59,6 +59,9 @@ public:
 
     /** wait for data on sensor and read them */
     virtual int16_t get_blocking() = 0;
+
+    /** wait for data on sensor and read all of them as a single vector */
+    virtual std::vector<int16_t> get_all_blocking() = 0;
 };
 
 #endif //LAB_INTERFACE_ISENSORS_HPP

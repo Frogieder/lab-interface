@@ -2,19 +2,19 @@
 // Created by martin on 12/19/22.
 //
 
-#include "builtin_clock.hpp"
+#include "AD22151.hpp"
 
-bool BuiltinClock::init() {
+bool AD22151::init() {
     this->set_scale(5);
     init_done = true;
     return init_done;
 }
 
-int16_t BuiltinClock::get_blocking() {
+int16_t AD22151::get_blocking() {
     return (int16_t) ((time_us_32() / scale) & 0xffff);
 }
 
-bool BuiltinClock::set_scale(int _scale) {
+bool AD22151::set_scale(int _scale) {
     if (scale < 0)
         return false;
     this->scale = 1;
@@ -25,26 +25,26 @@ bool BuiltinClock::set_scale(int _scale) {
     return true;
 }
 
-bool BuiltinClock::calibrate() {
+bool AD22151::calibrate() {
     return true;
 }
 
-bool BuiltinClock::start_session() {
+bool AD22151::start_session() {
     return true;
 }
 
-bool BuiltinClock::deinit() {
+bool AD22151::deinit() {
     return true;
 }
 
-BuiltinClock::~BuiltinClock() = default;
+AD22151::~AD22151() = default;
 
-BuiltinClock::BuiltinClock() {
+AD22151::AD22151() {
     this->init_done = false;
     this->scale = 1;
     this->decimal_points = 6;
 }
 
-std::vector<int16_t> BuiltinClock::get_all_blocking() {
+std::vector<int16_t> AD22151::get_all_blocking() {
     return {get_blocking()};
 }

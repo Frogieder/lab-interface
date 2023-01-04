@@ -6,7 +6,10 @@
 #define LAB_INTERFACE_SENSORS_H
 
 #include "isensors.hpp"
+
+// Include all supported sensors
 #include "builtin_clock.hpp"
+#include "AD22151.hpp"
 
 /** interface class for all sensor types */
 typedef std::vector<std::shared_ptr<iSensor>> sensorlist_t;
