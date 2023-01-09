@@ -30,9 +30,9 @@ public:
 
     bool start_session() override;
 
-    int16_t get_blocking() override;
+    int16_t get_raw_blocking() override;
 
-    std::vector<int16_t> get_all_blocking() override;
+    std::vector<float> get_all_blocking() override;
 };
 
 

@@ -10,7 +10,7 @@ bool BuiltinClock::init(Port port) {
     return init_done;
 }
 
-int16_t BuiltinClock::get_blocking() {
+int16_t BuiltinClock::get_raw_blocking() {
     return (int16_t) ((time_us_32() / scale) & 0xffff);
 }
 
@@ -45,6 +45,6 @@ BuiltinClock::BuiltinClock() {
     this->decimal_points = 6;
 }
 
-std::vector<int16_t> BuiltinClock::get_all_blocking() {
+std::vector<float> BuiltinClock::get_all_blocking() {
     return {get_blocking()};
 }

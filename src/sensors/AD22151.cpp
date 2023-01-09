@@ -12,7 +12,7 @@ bool AD22151::init(Port port) {
     return init_done;
 }
 
-int16_t AD22151::get_blocking() {
+int16_t AD22151::get_raw_blocking() {
     adc_select_input(adc_num);
     uint16_t result = adc_read();
     return (int16_t)result;
@@ -47,8 +47,10 @@ AD22151::AD22151() {
     this->init_done = false;
     this->scale = 1;
     this->decimal_points = 6;
+    // initialized, but yet not tu be used
+    this->adc_num = 0;
 }
 
-std::vector<int16_t> AD22151::get_all_blocking() {
+std::vector<float> AD22151::get_all_blocking() {
     return {get_blocking()};
 }

@@ -102,11 +102,14 @@ public:
     /** tell sensor to start collecting data */
     virtual bool start_session() = 0;
 
-    /** wait for data on sensor and read them */
-    virtual int16_t get_blocking() = 0;
+    /** wait for data and return them without any processing */
+    virtual int16_t get_raw_blocking() = 0;
+
+    /** wait for data on sensor, process it and return it in human-readable form */
+    virtual float get_blocking() {return get_raw_blocking();};
 
     /** wait for data on sensor and read all of them as a single vector */
-    virtual std::vector<int16_t> get_all_blocking() = 0;
+    virtual std::vector<float> get_all_blocking() = 0;
 };
 
 #endif //LAB_INTERFACE_ISENSORS_HPP
