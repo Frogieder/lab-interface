@@ -22,7 +22,9 @@ std::shared_ptr<iSensor> Sensors::add_sensor(SensorType sensor_type) {
             list.push_back(sensor);
             break;
         case force_fx29k0:
-//            break;
+            sensor = std::make_shared<FX29>();
+            list.push_back(sensor);
+            break;
         case temp_gy906:
 //            break;
         case accel_ADXL312:

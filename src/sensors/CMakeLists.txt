@@ -3,6 +3,7 @@ add_library(sensors
         builtin_clock.cpp
         AD22151.cpp
         2c55.cpp
+        fx29.cpp
         )
 
 target_link_libraries(sensors
