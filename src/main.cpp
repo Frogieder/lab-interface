@@ -76,6 +76,7 @@ int main() {
             default:
                 menu.fatal_error("Function not implemented");
         }
+        printf("exited");
     }
     return 0;
 }

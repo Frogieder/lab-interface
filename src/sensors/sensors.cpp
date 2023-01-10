@@ -17,9 +17,11 @@ std::shared_ptr<iSensor> Sensors::add_sensor(SensorType sensor_type) {
             sensor = std::make_shared<AD22151>();
             list.push_back(sensor);
             break;
-        case force_fx29k0:
-//            break;
         case temp_2c55:
+            sensor = std::make_shared<TE2c55>();
+            list.push_back(sensor);
+            break;
+        case force_fx29k0:
 //            break;
         case temp_gy906:
 //            break;

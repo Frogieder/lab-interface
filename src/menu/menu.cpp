@@ -76,10 +76,12 @@ std::string_view Menu::get_item(uint32_t menu, uint32_t pos, layout_t *_layout) 
     return "";
 }
 
-[[noreturn]] void Menu::fatal_error(std::string_view text) {
+[[noreturn]] void Menu::fatal_error(std::string_view text, std::string_view text1, std::string_view text2) {
     display->clear();
     pico_ssd1306::drawText(display, font_12x16, "Error", 0, 0);
     pico_ssd1306::drawText(display, font_5x8, text, 0, 18);
+    pico_ssd1306::drawText(display, font_5x8, text1, 0, 28);
+    pico_ssd1306::drawText(display, font_5x8, text2, 0, 38);
     display->sendBuffer();
     while (true);
 }
@@ -128,7 +130,7 @@ SensorType Menu::choose_sensor() {
                     if (sensor_layout_enum_map.contains(menu))
                         return sensor_layout_enum_map[menu];
                     else
-                        fatal_error("Wrong sensor: " + std::to_string(menu));
+                        fatal_error("Wrong sensor: " + std::to_string(menu), "menu.cpp");
                 }
                 pos = 0;
                 break;

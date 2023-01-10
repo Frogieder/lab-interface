@@ -87,7 +87,7 @@ class Menu {
         {0x1,         {"Force sensor",  {MENU_ROOT,   0x10}}},
         {0x10,        {"TE: FX29K0",    {}}},
         /* Temperature */
-        {0x2,         {"Temperature",   {MENU_ROOT,   0x20}}},
+        {0x2,         {"Temperature",   {MENU_ROOT,   0x20, 0x21}}},
         {0x20,        {"GY906",         {}}},
         {0x21,        {"2c55",          {}}},
         /* Acceleration */
@@ -109,7 +109,7 @@ class Menu {
         {0x00,        SensorType::none},
         {0x10,        SensorType::force_fx29k0},
         {0x20,        SensorType::temp_gy906},
-        {0x20,        SensorType::temp_2c55},
+        {0x21,        SensorType::temp_2c55},
         {0x30,        SensorType::accel_ADXL312},
         {0x40,        SensorType::distance_hcsr04},
         {0x50,        SensorType::hall_AD22151},
@@ -147,7 +147,7 @@ public:
     void monitor_sensor(uint32_t sensor);
 
     /** call this in case everything fails and cry */
-    [[noreturn]] void fatal_error(std::string_view text = "");
+    [[noreturn]] void fatal_error(std::string_view text = "", std::string_view text1 = "", std::string_view text2 = "");
 
     /** Update the contents of the sensor list */
     void generate_sensor_list(sensorlist_t *sensorlist);

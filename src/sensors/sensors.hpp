@@ -10,6 +10,7 @@
 // Include all supported sensors
 #include "builtin_clock.hpp"
 #include "AD22151.hpp"
+#include "2c55.hpp"
 
 /** interface class for all sensor types */
 typedef std::vector<std::shared_ptr<iSensor>> sensorlist_t;
