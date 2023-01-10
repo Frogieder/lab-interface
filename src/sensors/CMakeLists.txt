@@ -4,6 +4,7 @@ add_library(sensors
         AD22151.cpp
         2c55.cpp
         fx29.cpp
+        isensors.cpp
         )
 
 target_link_libraries(sensors

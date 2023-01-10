@@ -110,6 +110,9 @@ public:
 
     /** wait for data on sensor and read all of them as a single vector */
     virtual std::vector<float> get_all_blocking() = 0;
+
+    /** return average of 2^n measurements */
+    uint16_t get_raw_average_blocking(uint n=4);
 };
 
 #endif //LAB_INTERFACE_ISENSORS_HPP

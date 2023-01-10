@@ -9,6 +9,8 @@
 #include <vector>
 #include <string_view>
 #include "ranges"
+#include <bitset>
+
 #include "../sensors/sensors.hpp"
 #include "pico/stdlib.h"
 #include "../knob/knob.hpp"

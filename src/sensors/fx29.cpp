@@ -13,13 +13,14 @@ bool FX29::init(Port port) {
 
 int16_t FX29::get_raw_blocking() {
     union {
-        uint8_t uint8;
+        uint8_t uint8[2];
         uint16_t uint16;
     } buffer{};
     while (true) {
-        auto i2c_result = i2c_read_blocking_until(SENSOR_I2C, 0x28, &buffer.uint8, 2, false, make_timeout_time_ms(10));
+        auto i2c_result = i2c_read_blocking_until(SENSOR_I2C, 0x28, buffer.uint8, 2, false, make_timeout_time_ms(10));
         if (i2c_result == PICO_ERROR_GENERIC or i2c_result == PICO_ERROR_TIMEOUT)
             return ~0;
+        std::swap(buffer.uint8[0], buffer.uint8[1]);
         if (!(buffer.uint16 & (1<<15)))
             return (int16_t)(buffer.uint16 - offset);
         else

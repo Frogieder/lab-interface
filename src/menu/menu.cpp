@@ -27,7 +27,7 @@ void Menu::display_menu(uint32_t menu, uint8_t pos, layout_t *_layout) {
     }
         /* Fatal error */
     else {
-        this->fatal_error();
+        this->fatal_error("display_menu", "menu.c");
     }
     display->sendBuffer();
 }
@@ -191,13 +191,19 @@ void Menu::browse_sensors() {
 void Menu::monitor_sensor(uint32_t sensor) {
     auto font = choose_font((*sensors).list[sensor]->name().length());
     while (true) {
-        knob_state state = knob->tick();
-        if (state.press) {
-            break;
+        auto next_update = time_us_64() + 10000;
+        while(time_us_64() < next_update) {
+            knob_state state = knob->tick();
+            if (state.press) {
+                return;
+            }
         }
         display->clear();
         pico_ssd1306::drawText(display, font, (*sensors).list[sensor]->name(), 0, 0);
-        pico_ssd1306::drawText(display, font_8x8, std::to_string((*sensors).list[sensor]->get_blocking()), 0, 20);
+        pico_ssd1306::drawText(display, font_8x8, std::to_string((*sensors).list[sensor]->get_raw_average_blocking()), 0, 20);
+//        pico_ssd1306::drawText(display, font_8x8,
+//                               std::bitset<16>((*sensors).list[sensor]->get_raw_blocking()).to_string(),
+//                               0, 20);
         display->sendBuffer();
     }
 }
