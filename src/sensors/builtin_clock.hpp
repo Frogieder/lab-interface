@@ -11,6 +11,8 @@ class BuiltinClock : public iSensor {
 public:
     [[nodiscard]] std::string_view name() const override {return "Builtin Clock";}
 
+    [[nodiscard]] std::string_view unit() const override {return "s";}
+
     [[nodiscard]] uint n_values() const override {return 1;}
 
     [[nodiscard]] std::vector<Port> get_compatible_ports() const override {return {Port::NoConnection};};

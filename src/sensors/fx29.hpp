@@ -12,6 +12,8 @@ class FX29 : public iSensor {
 public:
     [[nodiscard]] std::string_view name() const override {return "fx29";}
 
+    [[nodiscard]] std::string_view unit() const override {return "N";}
+
     [[nodiscard]] uint n_values() const override {return 1;}
 
     [[nodiscard]] std::vector<Port> get_compatible_ports() const override {return {Port::I2C0, Port::I2C1, Port::I2C2};};

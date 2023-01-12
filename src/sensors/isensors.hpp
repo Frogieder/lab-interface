@@ -78,6 +78,9 @@ public:
     /** display name of the sensor in the menu */
     [[nodiscard]] virtual std::string_view name() const = 0;
 
+    /** display name of the sensor in the menu */
+    [[nodiscard]] virtual std::string_view unit() const = 0;
+
     /**  number of monitored values */
     [[nodiscard]] virtual uint n_values() const = 0;
 
@@ -105,11 +108,14 @@ public:
     /** wait for data and return them without any processing */
     virtual int16_t get_raw_blocking() = 0;
 
+    /** turns the raw data into a float in an appropriate SI unit */
+    virtual float process_raw(uint16_t data) {return (float)data;};
+
     /** wait for data on sensor, process it and return it in human-readable form */
-    virtual float get_blocking() {return get_raw_blocking();};
+    virtual float get_blocking() {return process_raw(get_raw_blocking());};
 
     /** wait for data on sensor and read all of them as a single vector */
-    virtual std::vector<float> get_all_blocking() = 0;
+    virtual std::vector<float> get_all_blocking() {return {get_blocking()};};
 
     /** return average of 2^n measurements */
     uint16_t get_raw_average_blocking(uint n=4);
