@@ -49,10 +49,10 @@ int main() {
         switch (selected) {
 
             /** Attaching sensor */
-            case MENU_MANAGE_ATTACH:
+            case MENU_ATTACH:
                 sensorType = menu.choose_sensor();
                 if (sensorType == SensorType::none) { // No sensor chosen
-                    start = MENU_MANAGE;
+                    start = MENU_ROOT;
                     break;
                 }
                 else { // A sensor was chosen
@@ -69,7 +69,7 @@ int main() {
                     sensor->init(port);
                 }
                 break;
-            case MENU_MANAGE_LIST:
+            case MENU_LIST:
                 menu.generate_sensor_list(&sensors.list);
                 menu.browse_sensors();
                 break;

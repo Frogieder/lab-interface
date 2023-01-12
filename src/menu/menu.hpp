@@ -24,11 +24,9 @@
 
 #define MENU_ROOT 0
 
-#define MENU_MANAGE 0x1
-#define MENU_MANAGE_LIST (0x10 | FLAG_FUNCTION)
-#define MENU_MANAGE_ATTACH (0x11 | FLAG_FUNCTION)
+#define MENU_LIST (0x1 | FLAG_FUNCTION)
+#define MENU_ATTACH (0x2 | FLAG_FUNCTION)
 
-#define MENU_MONITOR 0x2
 #define MENU_START 0x3
 #define MENU_CALIBRATE 0x4
 #define MENU_DUMMY_ONE 0x5
@@ -56,21 +54,14 @@ class Menu {
     Knob *knob;
     Sensors *sensors;
     layout_t main_menu_layout = {
-        {MENU_ROOT,          {"Main Menu",     {MENU_MANAGE, MENU_MONITOR,     MENU_START, MENU_CALIBRATE,
-                                                   MENU_DUMMY_ONE, MENU_DUMMY_TWO}}},
+        {MENU_ROOT,      {"Main Menu",    {MENU_LIST, MENU_ATTACH, MENU_START}}},
         /* Management submenu */
-        {MENU_MANAGE,        {"Manage",        {MENU_ROOT,   MENU_MANAGE_LIST, MENU_MANAGE_ATTACH}}},
-        {MENU_MANAGE_ATTACH, {"Attach",        {}}},
-        {MENU_MANAGE_LIST,   {"List sensors",  {}}},
+        {MENU_ATTACH,    {"Attach",       {}}},
+        {MENU_LIST,      {"List sensors", {}}},
         /* Monitoring submenu */
-        {MENU_MONITOR,       {"Monitor",       {MENU_ROOT}}},
         /* Measurement submenu */
-        {MENU_START,         {"Measure",       {MENU_ROOT}}},
+        {MENU_START,     {"Measure",      {MENU_ROOT}}},
         /* Calibration menu */
-        {MENU_CALIBRATE,     {"Calibrate",     {MENU_ROOT}}},
-        /* Dummies */
-        {MENU_DUMMY_ONE,     {"Dummy 1",       {MENU_ROOT}}},
-        {MENU_DUMMY_TWO,     {"Dummy 2",       {MENU_ROOT}}},
 
         // I forgot why I need it, but without this I can't get the sensor selection to work
         // TODO: Find why it's needed and then safely remove it
