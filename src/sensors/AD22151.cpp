@@ -54,3 +54,20 @@ AD22151::AD22151() {
 std::vector<float> AD22151::get_all_blocking() {
     return {get_blocking()};
 }
+
+float AD22151::process_raw(uint16_t data) {
+    /**
+     * Bit level magic.
+     * This works because the current setup has R3/R2 = 4 and ADC gives results from 0 to 4096.
+     * For other R3/R2 ratios and possibly even offset, it may not be as simple.
+     * The reason to use this is that Cortex M0 doesn't have an FPU.
+     *
+     * Current formula: (data - 2048) * 125 / 2048
+     * Derived from: data * (5000mV / 4096) * (1mV / 20T)
+     */
+    int32_t a = (data - 2048) * 125;
+    auto result = (float)a;
+    // reduce the exponent of result by 11, effectively dividing it by 2048
+    *(uint32_t*)&result -= 0x5800000; // =(11 << 23)
+    return result;
+}

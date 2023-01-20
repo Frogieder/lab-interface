@@ -34,6 +34,8 @@ public:
 
     int16_t get_raw_blocking() override;
 
+    float process_raw(uint16_t data) override;
+
     std::vector<float> get_all_blocking() override;
 };
 
