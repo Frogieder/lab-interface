@@ -154,5 +154,8 @@ public:
     static unsigned char *choose_font(uint length);
 };
 
+// modified from basic_string.h
+static inline std::string float_to_string(float val);
+
 
 #endif //LAB_INTERFACE_MENU_H

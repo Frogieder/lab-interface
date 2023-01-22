@@ -191,7 +191,7 @@ void Menu::browse_sensors() {
 void Menu::monitor_sensor(uint32_t sensor) {
     auto font = choose_font((*sensors).list[sensor]->name().length());
     while (true) {
-        auto next_update = time_us_64() + 10000;
+        auto next_update = time_us_64() + 300000;
         while(time_us_64() < next_update) {
             knob_state state = knob->tick();
             if (state.press) {
@@ -200,10 +200,10 @@ void Menu::monitor_sensor(uint32_t sensor) {
         }
         display->clear();
         pico_ssd1306::drawText(display, font, (*sensors).list[sensor]->name(), 0, 0);
-        pico_ssd1306::drawText(display, font_8x8, std::to_string((*sensors).list[sensor]->get_raw_average_blocking()), 0, 20);
+        float val = (*sensors).list[sensor]->process_raw((*sensors).list[sensor]->get_raw_average_blocking());
+        pico_ssd1306::drawText(display, font_8x8,float_to_string(val) + " " + std::string((*sensors).list[sensor]->unit()),0, 20);
 //        pico_ssd1306::drawText(display, font_8x8,
-//                               std::bitset<16>((*sensors).list[sensor]->get_raw_blocking()).to_string(),
-//                               0, 20);
+//                               std::bitset<16>((*sensors).list[sensor]->get_raw_blocking()).to_string(),0, 20);
         display->sendBuffer();
     }
 }
@@ -260,4 +260,9 @@ Port Menu::choose_port(std::unique_ptr<layout_t> layout, const std::vector<Port>
             }
         }
     }
+}
+
+std::string float_to_string(float val) {
+    const int n = __gnu_cxx::__numeric_traits<float>::__max_exponent10 + 20;
+    return __gnu_cxx::__to_xstring<std::string>(&std::vsnprintf, n,"% .2f", val);
 }
