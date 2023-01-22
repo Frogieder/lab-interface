@@ -12,7 +12,7 @@ class AD22151 : public iSensor {
 public:
     [[nodiscard]] std::string_view name() const override {return "AD22151";}
 
-    [[nodiscard]] std::string_view unit() const override {return "T";}
+    [[nodiscard]] std::string_view unit() const override {return "mT";}
 
     [[nodiscard]] uint n_values() const override {return 1;}
 
