@@ -13,6 +13,7 @@ Menu::Menu(pico_ssd1306::SSD1306 *_display, Knob *_knob, Sensors *_sensors) {
 Menu::~Menu() = default;
 
 void Menu::display_menu(uint32_t menu, uint8_t pos, layout_t *_layout) {
+    display->clear();
     if ((*_layout).contains(menu)) {
         /* Title */
         pico_ssd1306::drawText(display, font_12x16, (*_layout)[menu].first, 0, 0);
@@ -38,7 +39,6 @@ uint32_t Menu::menu_loop(uint32_t start) {
     uint8_t pos = 0;
     while (true) {
         display_menu(menu, pos, &(this->main_menu_layout));
-        display->clear();
 
         /* wait for user input */
         while (true) {
