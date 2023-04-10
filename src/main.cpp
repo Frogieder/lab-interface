@@ -66,6 +66,12 @@ int main() {
                     Port port = menu.choose_port(
                         menu.generate_port_list_layout(sensor->get_compatible_ports()),
                         sensor->get_compatible_ports());
+
+                    if (port == Port::None) {
+                        sensors.list.pop_back();
+                        break;
+                    }
+                    sensors.set_state(port, ConnectionState::Connected);
                     sensor->init(port);
                 }
                 break;
@@ -73,10 +79,12 @@ int main() {
                 menu.generate_sensor_list(&sensors.list);
                 menu.browse_sensors();
                 break;
+            case MENU_MEASURE:
+                menu.measure();
+                break;
             default:
                 menu.fatal_error("Function not implemented");
         }
-        printf("exited");
     }
     return 0;
 }

@@ -262,6 +262,72 @@ Port Menu::choose_port(std::unique_ptr<layout_t> layout, const std::vector<Port>
     }
 }
 
+void Menu::measure() {
+    /* Confirm the user is ready */
+    uint32_t menu = 0;
+    uint8_t pos = 0;
+    bool ready = false;
+    while (!ready) {
+        display_menu(menu, pos, &pre_measurement_layout);
+        display->clear();
+        /* Wait for user input */
+        while (true) {
+            knob_state state = this->knob->tick();
+            if (state.rotation != 0) {
+                pos += state.rotation;
+                if (pos == 0xff)
+                    pos = 0;
+                else if (pos >= pre_measurement_layout[menu].second.size())
+                    pos = pre_measurement_layout[menu].second.size() - 1;
+                break;
+            }
+            if (state.press) {
+                menu = pre_measurement_layout[menu].second[pos];
+                if (menu == MENU_CANCEL)
+                    return;
+                if (menu == MENU_MEASURE) {
+                    ready = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    drawText(display, font_12x16, "Measuring...", 0, 0);
+    display->sendBuffer();
+    display->clear();
+
+    /* Inform about available sensors */
+    printf("\n!STARTING MEASUREMENT#\n");
+    for (const auto& sensor : sensors->list) {
+        auto sub = sensor->name().substr(0, sensor->name().length());
+        printf("=%.*s=", static_cast<int>(sub.length()), sub.data());
+    }
+    printf("\n");
+
+    /* Measurement loop */
+    auto state = knob->tick();
+    auto next_update = time_us_64();
+    while (!state.press) {
+        // Wait for next send
+        // TODO: variable frequency
+        do {
+            state = knob->tick();
+            if (state.press) {
+                printf("!END#\n");
+                return;
+            }
+        } while(time_us_64() < next_update);
+        next_update = time_us_64() + 1000;
+
+        // Measure each sensor
+        for (auto sensor : sensors->list) {
+            printf("%04x,", sensor->get_raw_average_blocking());
+        }
+        printf("\n");
+    }
+}
+
 std::string float_to_string(float val) {
     const int n = __gnu_cxx::__numeric_traits<float>::__max_exponent10 + 20;
     return __gnu_cxx::__to_xstring<std::string>(&std::vsnprintf, n,"% .2f", val);

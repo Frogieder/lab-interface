@@ -80,5 +80,8 @@ ConnectionState Sensors::get_state(Port port) {
 }
 
 void Sensors::set_state(Port port, ConnectionState state) {
-    connections[port] = state;
+    if (port == Port::NoConnection)
+        connections[port] = ConnectionState::Available;
+    else
+        connections[port] = state;
 }

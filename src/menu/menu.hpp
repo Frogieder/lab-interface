@@ -26,8 +26,8 @@
 
 #define MENU_LIST (0x1 | FLAG_FUNCTION)
 #define MENU_ATTACH (0x2 | FLAG_FUNCTION)
+#define MENU_MEASURE (0x3 | FLAG_FUNCTION)
 
-#define MENU_START 0x3
 #define MENU_CALIBRATE 0x4
 #define MENU_DUMMY_ONE 0x5
 #define MENU_DUMMY_TWO 0x6
@@ -54,22 +54,22 @@ class Menu {
     Knob *knob;
     Sensors *sensors;
     layout_t main_menu_layout = {
-        {MENU_ROOT,      {"Main Menu",    {MENU_LIST, MENU_ATTACH, MENU_START}}},
+        {MENU_ROOT,    {"Main Menu",     {MENU_LIST, MENU_ATTACH, MENU_MEASURE}}},
         /* Management submenu */
-        {MENU_ATTACH,    {"Attach",       {}}},
-        {MENU_LIST,      {"List sensors", {}}},
+        {MENU_ATTACH,  {"Attach",        {}}},
+        {MENU_LIST,    {"List sensors",  {}}},
         /* Monitoring submenu */
         /* Measurement submenu */
-        {MENU_START,     {"Measure",      {MENU_ROOT}}},
+        {MENU_MEASURE, {"Measure",       {}}},
         /* Calibration menu */
 
         // I forgot why I need it, but without this I can't get the sensor selection to work
         // TODO: Find why it's needed and then safely remove it
         /* SENSORS */
-        {SENSORS_MENU,       {"Select sensor", {MENU_ROOT,   SENSOR_CLOCK}}},
+        {SENSORS_MENU, {"Select sensor", {MENU_ROOT,   SENSOR_CLOCK}}},
 
         /* SPECIAL */
-        {MENU_CANCEL,        {"Cancel",        {MENU_ROOT}}}
+        {MENU_CANCEL,  {"Cancel",        {MENU_ROOT}}}
     };
 
 
@@ -117,6 +117,12 @@ class Menu {
         {MENU_SENSORS_MONITOR, {"Monitor", {}}}
     };
 
+    layout_t pre_measurement_layout = {
+        {MENU_ROOT, {"Start measurement?", {MENU_CANCEL, MENU_MEASURE}}},
+        {MENU_CANCEL, {"Cancel", {}}},
+        {MENU_MEASURE, {"Start", {}}}
+    };
+
 public:
     explicit Menu(pico_ssd1306::SSD1306 *_display, Knob *_knob, Sensors *_sensors);
 
@@ -152,6 +158,9 @@ public:
 
     /** Return the font that can fit the text of given length */
     static unsigned char *choose_font(uint length);
+
+    /** Start the measurement routine */
+    void measure();
 };
 
 // modified from basic_string.h
