@@ -92,10 +92,10 @@ public:
     virtual bool init(Port port) = 0;
 
     /** turn off the sensor (runs when sensor is told to disconnect) */
-    virtual bool deinit() = 0;
+    virtual bool deinit() {return true;};
 
     /** initiate interactive calibration procedure */
-    virtual bool calibrate() = 0;
+    virtual bool calibrate() {return true;};
 
     /** choose a scale on which measurements are performed
      *
